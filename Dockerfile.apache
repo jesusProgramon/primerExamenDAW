@@ -1,0 +1,17 @@
+FROM httpd:latest
+
+# Instalar herramientas útiles para debugging
+RUN apt-get update && apt-get install -y \
+    curl \
+    iputils-ping \
+    dnsutils \
+    && rm -rf /var/lib/apt/lists/*
+
+# Crear página personalizada
+RUN echo "<html><body><h1>Servidor Apache - Proyecto Docker</h1><p>IP: 172.18.0.2</p><p>Hostname: apache-server</p></body></html>" > /usr/local/apache2/htdocs/index.html
+
+# Exponer puerto
+EXPOSE 80
+
+# Comando por defecto
+CMD ["httpd-foreground"]

@@ -1,0 +1,65 @@
+services:
+  # Servidor Apache
+  apache:
+    build:
+      context: .
+      dockerfile: Dockerfile.apache
+    container_name: servidor-web
+    hostname: apache-server
+    networks:
+      red-apache:
+        ipv4_address: 172.18.0.2
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    volumes:
+      - ./html:/usr/local/apache2/htdocs
+
+  # Servidor Nginx
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: servidor-nginx
+    hostname: nginx-server
+    networks:
+      red-apache:
+        ipv4_address: 172.18.0.5
+    ports:
+      - "8081:80"
+    restart: unless-stopped
+    volumes:
+      - ./html:/usr/share/nginx/html
+
+  # Cliente Alpine para pruebas
+  cliente:
+    image: alpine:latest
+    container_name: cliente-test
+    hostname: cliente-alpine
+    networks:
+      red-apache:
+        ipv4_address: 172.18.0.3
+    tty: true
+    stdin_open: true
+    command: >
+      sh -c "
+      apk add --no-cache curl bind-tools iputils &&
+      echo '=== Contenedor Cliente Alpine ===' &&
+      echo 'Comandos disponibles:' &&
+      echo 'curl http://servidor-web' &&
+      echo 'curl http://servidor-nginx' && 
+      echo 'ping servidor-web' &&
+      echo 'nslookup servidor-web' &&
+      tail -f /dev/null
+      "
+    depends_on:
+      - apache
+      - nginx
+
+networks:
+  red-apache:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
+          gateway: 172.18.0.1

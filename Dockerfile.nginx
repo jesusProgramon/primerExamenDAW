@@ -1,0 +1,16 @@
+FROM nginx:alpine
+
+# Instalar herramientas útiles para debugging
+RUN apk add --no-cache \
+    curl \
+    iputils \
+    bind-tools
+
+# Crear página personalizada
+RUN echo "<html><body><h1>Servidor Nginx - Proyecto Docker</h1><p>IP: 172.18.0.5</p><p>Hostname: nginx-server</p></body></html>" > /usr/share/nginx/html/index.html
+
+# Exponer puerto
+EXPOSE 80
+
+# Comando por defecto
+CMD ["nginx", "-g", "daemon off;"]
