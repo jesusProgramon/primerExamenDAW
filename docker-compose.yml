@@ -14,6 +14,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./html:/usr/local/apache2/htdocs
+    user: root
 
   # Servidor Nginx
   nginx:
@@ -30,8 +31,10 @@ services:
     restart: unless-stopped
     volumes:
       - ./html:/usr/share/nginx/html
+    user: root
+    command: ["nginx", "-g", "daemon off;"]
 
-  # Cliente Alpine para pruebas
+  # Cliente
   cliente:
     image: alpine:latest
     container_name: cliente-test
