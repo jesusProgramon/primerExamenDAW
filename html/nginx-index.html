@@ -196,20 +196,26 @@
             margin: 5px;
             font-size: 0.8rem;
         }
+        
+        .info-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="container">
             <div class="logo">
-                <h1>Nginx Docker Server</h1>
+                <h1>🚀 Nginx Docker Server</h1>
             </div>
         </div>
     </header>
     
     <section class="hero">
         <div class="container">
-            <h2>Servidor Web Nginx</h2>
+            <h2 id="animated-title">Servidor Web Nginx</h2>
             <p>Alto rendimiento y eficiencia para aplicaciones web modernas</p>
             <a href="#features" class="btn">Descubre más</a>
         </div>
@@ -220,15 +226,15 @@
             <h2 class="section-title">Ventajas de Nginx</h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <h3>Alto Rendimiento</h3>
+                    <h3>⚡ Alto Rendimiento</h3>
                     <p>Arquitectura basada en eventos que maneja miles de conexiones simultáneas con mínimo uso de recursos.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>Balanceo de Carga</h3>
+                    <h3>🔀 Balanceo de Carga</h3>
                     <p>Capacidades avanzadas de balanceo de carga para distribuir tráfico entre múltiples servidores.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>Caché Eficiente</h3>
+                    <h3>💾 Caché Eficiente</h3>
                     <p>Sistema de caché que acelera la entrega de contenido estático y dinámico.</p>
                 </div>
             </div>
@@ -242,7 +248,7 @@
             
             <div class="performance-stats">
                 <div class="stat">
-                    <h3>+10k</h3>
+                    <h3 id="connections">0</h3>
                     <p>Conexiones concurrentes</p>
                 </div>
                 <div class="stat">
@@ -250,7 +256,7 @@
                     <p>Tiempo de respuesta</p>
                 </div>
                 <div class="stat">
-                    <h3>99.9%</h3>
+                    <h3 id="availability">0%</h3>
                     <p>Disponibilidad</p>
                 </div>
             </div>
@@ -259,22 +265,27 @@
     
     <section class="info-panel">
         <div class="container">
+            <h2 class="section-title" style="color: white;">Información del Servidor</h2>
             <div class="info-grid">
                 <div class="info-item">
-                    <h3>IP</h3>
-                    <p><?php echo $_SERVER['SERVER_ADDR'] ?? '172.18.0.5'; ?></p>
+                    <h3>📍</h3>
+                    <p>Dirección IP</p>
+                    <div class="info-value">172.18.0.5</div>
                 </div>
                 <div class="info-item">
-                    <h3>Hostname</h3>
-                    <p><?php echo gethostname(); ?></p>
+                    <h3>🖥️</h3>
+                    <p>Hostname</p>
+                    <div class="info-value">nginx-server</div>
                 </div>
                 <div class="info-item">
-                    <h3>Software</h3>
-                    <p><?php echo $_SERVER['SERVER_SOFTWARE']; ?></p>
+                    <h3>⚙️</h3>
+                    <p>Software</p>
+                    <div class="info-value">Nginx</div>
                 </div>
                 <div class="info-item">
-                    <h3>PHP</h3>
-                    <p><?php echo phpversion(); ?></p>
+                    <h3>🐳</h3>
+                    <p>Plataforma</p>
+                    <div class="info-value">Docker</div>
                 </div>
             </div>
         </div>
@@ -286,19 +297,38 @@
             <div>
                 <span class="tech-badge">Docker</span>
                 <span class="tech-badge">Nginx</span>
-                <span class="tech-badge">PHP</span>
+                <span class="tech-badge">HTML5</span>
+                <span class="tech-badge">CSS3</span>
+                <span class="tech-badge">JavaScript</span>
                 <span class="tech-badge">Networking</span>
             </div>
             <div class="server-info">
-                <p><strong>Conectado desde:</strong> <?php echo $_SERVER['REMOTE_ADDR']; ?></p>
-                <p><strong>Usuario Agente:</strong> <?php echo $_SERVER['HTTP_USER_AGENT']; ?></p>
+                <p><strong>🕐 Última actualización:</strong> <span id="current-time"></span></p>
+                <p><strong>🌐 Tu dirección:</strong> <span id="client-ip">Cargando...</span></p>
+                <p><strong>📱 Navegador:</strong> <span id="user-agent"></span></p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Animación para las tarjetas de características
+        // Efecto de escritura para el título
         document.addEventListener('DOMContentLoaded', function() {
+            const heroTitle = document.getElementById('animated-title');
+            const text = heroTitle.textContent;
+            heroTitle.textContent = '';
+            
+            let i = 0;
+            function typeWriter() {
+                if (i < text.length) {
+                    heroTitle.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 100);
+                }
+            }
+            
+            typeWriter();
+            
+            // Animación para las tarjetas de características
             const featureCards = document.querySelectorAll('.feature-card');
             
             featureCards.forEach((card, index) => {
@@ -313,19 +343,64 @@
             });
             
             // Contador animado para las estadísticas
-            const stats = document.querySelectorAll('.stat h3');
-            stats.forEach(stat => {
-                const target = parseInt(stat.textContent);
-                let current = 0;
-                const increment = target / 50;
+            const connectionsStat = document.getElementById('connections');
+            const availabilityStat = document.getElementById('availability');
+            
+            function animateCounter(element, target, duration = 2000) {
+                let start = 0;
+                const increment = target / (duration / 16);
                 const timer = setInterval(() => {
-                    current += increment;
-                    if (current >= target) {
-                        current = target;
+                    start += increment;
+                    if (start >= target) {
+                        element.textContent = target === 99.9 ? '99.9%' : target.toLocaleString();
                         clearInterval(timer);
+                    } else {
+                        element.textContent = target === 99.9 
+                            ? Math.min(start, 99.9).toFixed(1) + '%'
+                            : Math.floor(start).toLocaleString();
                     }
-                    stat.textContent = Math.floor(current).toLocaleString();
-                }, 30);
+                }, 16);
+            }
+            
+            setTimeout(() => {
+                animateCounter(connectionsStat, 10000);
+                animateCounter(availabilityStat, 99.9);
+            }, 1000);
+            
+            // Actualizar hora actual
+            function updateTime() {
+                const now = new Date();
+                document.getElementById('current-time').textContent = now.toLocaleString('es-ES');
+            }
+            
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            // Mostrar información del cliente
+            document.getElementById('user-agent').textContent = navigator.userAgent;
+            
+            // Intentar obtener la IP del cliente (usando un servicio externo)
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('client-ip').textContent = data.ip;
+                })
+                .catch(() => {
+                    document.getElementById('client-ip').textContent = 'No disponible';
+                });
+                
+            // Efectos de scroll suave
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
             });
         });
     </script>

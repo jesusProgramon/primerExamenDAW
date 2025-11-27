@@ -204,19 +204,19 @@
             <div class="info-grid">
                 <div class="info-item">
                     <h3>IP</h3>
-                    <p><?php echo $_SERVER['SERVER_ADDR'] ?? '172.18.0.2'; ?></p>
+                    <p>172.18.0.2</p>
                 </div>
                 <div class="info-item">
                     <h3>Hostname</h3>
-                    <p><?php echo gethostname(); ?></p>
+                    <p>apache-server</p>
                 </div>
                 <div class="info-item">
                     <h3>Software</h3>
-                    <p><?php echo $_SERVER['SERVER_SOFTWARE']; ?></p>
+                    <p>Apache HTTP Server</p>
                 </div>
                 <div class="info-item">
-                    <h3>PHP</h3>
-                    <p><?php echo phpversion(); ?></p>
+                    <h3>Contenedor</h3>
+                    <p>Docker</p>
                 </div>
             </div>
         </div>
@@ -226,8 +226,8 @@
         <div class="container">
             <p>Proyecto de Despliegue de Aplicaciones Web - Jesús Miranda Díaz</p>
             <div class="server-info">
-                <p><strong>Conectado desde:</strong> <?php echo $_SERVER['REMOTE_ADDR']; ?></p>
-                <p><strong>Usuario Agente:</strong> <?php echo $_SERVER['HTTP_USER_AGENT']; ?></p>
+                <p><strong>Conectado desde:</strong> <span id="client-ip">Cargando...</span></p>
+                <p><strong>Usuario Agente:</strong> <span id="user-agent">Cargando...</span></p>
             </div>
         </div>
     </footer>
@@ -249,6 +249,19 @@
             }
             
             typeWriter();
+
+            // Obtener información del cliente
+            document.getElementById('user-agent').textContent = navigator.userAgent;
+            
+            // Obtener IP del cliente (usando un servicio externo)
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('client-ip').textContent = data.ip;
+                })
+                .catch(() => {
+                    document.getElementById('client-ip').textContent = 'No disponible';
+                });
         });
     </script>
 </body>
