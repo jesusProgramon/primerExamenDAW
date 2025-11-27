@@ -1,22 +1,13 @@
 FROM nginx:alpine
 
-# Instalar PHP-FPM y herramientas útiles para debugging
+# Instalar herramientas útiles para debugging
 RUN apk add --no-cache \
-    php81 \
-    php81-fpm \
     curl \
     iputils \
     bind-tools
-
-# Configurar PHP-FPM
-RUN sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/' /etc/php81/php.ini && \
-    mkdir -p /var/run/php
-
-# Configurar Nginx para PHP
-COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Exponer puerto
 EXPOSE 80
 
 # Comando por defecto
-CMD sh -c "php-fpm81 -D && nginx -g 'daemon off;'"
+CMD ["nginx", "-g", "daemon off;"]
