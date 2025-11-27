@@ -10,6 +10,9 @@ RUN apt-get update && apt-get install -y \
 # Configurar ServerName para evitar warning
 RUN echo "ServerName localhost" >> /usr/local/apache2/conf/httpd.conf
 
+# Configurar DirectoryIndex específico para Apache
+RUN echo "DirectoryIndex index.html" >> /usr/local/apache2/conf/httpd.conf
+
 # Configurar permisos
 RUN chown -R www-data:www-data /usr/local/apache2/htdocs
 RUN chmod -R 755 /usr/local/apache2/htdocs

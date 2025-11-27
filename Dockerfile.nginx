@@ -6,6 +6,19 @@ RUN apk add --no-cache \
     iputils \
     bind-tools
 
+# Crear y configurar permisos de los directorios de cache de nginx
+RUN mkdir -p /var/cache/nginx/client_temp && \
+    mkdir -p /var/cache/nginx/proxy_temp && \
+    mkdir -p /var/cache/nginx/fastcgi_temp && \
+    mkdir -p /var/cache/nginx/uwsgi_temp && \
+    mkdir -p /var/cache/nginx/scgi_temp && \
+    chown -R nginx:nginx /var/cache/nginx && \
+    chmod -R 755 /var/cache/nginx
+
+# Configurar permisos del directorio html
+RUN chown -R nginx:nginx /usr/share/nginx/html && \
+    chmod -R 755 /usr/share/nginx/html
+
 # Exponer puerto
 EXPOSE 80
 

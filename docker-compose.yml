@@ -13,7 +13,7 @@ services:
       - "8080:80"
     restart: unless-stopped
     volumes:
-      - ./html:/usr/local/apache2/htdocs
+      - ./apache-html:/usr/local/apache2/htdocs
     user: root
 
   # Servidor Nginx
@@ -30,8 +30,7 @@ services:
       - "8081:80"
     restart: unless-stopped
     volumes:
-      - ./html:/usr/share/nginx/html
-    user: root
+      - ./nginx-html:/usr/share/nginx/html
     command: ["nginx", "-g", "daemon off;"]
 
   # Cliente
